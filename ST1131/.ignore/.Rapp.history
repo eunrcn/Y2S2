@@ -1,0 +1,74 @@
+options(repos = c(RSM = "https://radiant-rstats.github.io/minicran", CRAN #
+= "https://cloud.r-project.org"))#
+install.packages("radiant")
+c = c(1,2,3,4,5)
+c
+c
+c = c(1, 2, 3, 4,5)
+v = c(2, 6, 10. 8)
+v = c(2, 6, 10, 8)
+matrix (v, 2, 2 )
+matrix (v, 2, 2 , byrow = TRUE)
+M = matrix (v, 2, 2 , byrow = TRUE)
+M
+M*10
+n = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+N = matrix(n, 2, 5, byrow = TRUE)
+M*N
+N
+n = c(:10)
+n = c(1:10)
+n
+N = matrix(n, 2, 5, byrow = TRUE)
+N
+M%*%N
+10*0.1
+solve(M)
+m = solve(M)
+M%*%m
+a = 1:4
+b = 5:8
+rbind(a, b)
+cbind(a, b)
+z = 1:8
+rbind(a,z)
+z = 1:7
+rbind(a,z)
+read.table("crab.txt" ,header = TRUE, SEP = "" )
+read.table("crab.txt" ,header = TRUE, sep = "" )
+getwd()
+setwd( "C:\\User\\eunice\\Desktop\\ST1131")
+setwd( "C:/User/eunice/Desktop/ST1131")
+setwd( "C:/Users/eunice/Desktop/ST1131")
+setwd( "C:/Users/eunice/Desktop/ST11
+setwd("C:/Users/eunice/Desktop/ST1131")#
+setwd("C:/Users/eunice/Desktop/ST1131")#
+setwd("C:/Users/eunice/Desktop/ST1131")
+setwd("C:/Users/eunice/Desktop/ST1131")
+setwd("C:\\Users\\eunice\\Desktop\\ST1131")
+setwd("/Users/eunice/Desktop/ST1131")
+data1 = read.table("crab.txt", header = TRUE, sep = "")
+?read.csv
+read.csv("crab.txt", header = TRUE, sep = "")
+data1
+names(data1)
+names(data1)[1] = "COLOR"
+names(data1)
+data1$weight
+attach(data1)
+weight
+data1[1:10, ]
+data1[ ,3:4]
+data1[COLOR ==3]
+data1[COLOR == 3]
+data1[COLOR == 3,]
+data1[COLOR == 3,]
+data1[COLOR == 3,]
+data1[COLOR == 3,]
+data1[COLOR == 3,]
+data1[COLOR == 3,]
+data1[ ,3:4]
+attach(data1)
+weight
+data1{rows. col]
+data1[1:10, ]
