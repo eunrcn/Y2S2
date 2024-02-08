@@ -1,0 +1,240 @@
+superkey=uniquely identifies tuples within a relation instance
+A key is a superkey that is also minimal
+Minimal-Removing any element will not preserve the property
+
+
+Relation-A table, As a set, the order of rows does not matter
+Attribute-A column of the table, Given a relation R, we denote the 
+set of attributes as Attr(R)
+Tuple-A row on the table As a tuple, the order of values or columns 
+matter
+
+start from smallest first
+for same values of BC theres diff values of A and therefore BC
+cannot be a super key
+
+if AC is a superkey, if i add one more attribute to it, it will still 
+be unique
+with the smallest subset, can find supersets 
+
+a.
+abcd
+abc
+abd
+acd 
+ac 
+ad 
+
+AC being a super key automatically removes all the super set of AC
+ABC, ACD, ABCD are no longer keys bc they are not minimal
+remaining AD and ABD, both are still possible candidate key
+we have no information to remove ABD jsut bc AD is there
+
+
+b.
+candidate keys of R given that {A,C} is a superkey 
+= we need to find minimal superkeys that include {A, C}
+
+{A,C,D}
+{A,C,B}
+
+
+2
+
+all candidate keys are unqiue and not null
+
+2 relations office and employees
+offices:
+- building floor, room number, floor area are attributes
+- are there any foreign keys/dependencies? no specifications
+- what should the type be for all of them? intuition
+- constraints? 
+- office_id is primary key
+{building, floor, room_number} is a candidate key
+all 3 must be not null 
+
+
+CREATE TABLE Offices (
+    office_id TEXT,
+    building TEXT NOT NULL,
+    floor TEXT NOT NULL,
+    room_number INT NOT NULL,
+    area TEXT NOT NULL,
+    PRIMARY KEY (office_id),
+    UNIQUE (building, floor, room_number)
+)
+
+UNIQUE FOREIGN, are table constraints spans multiple attributes
+
+
+-- Create Offices table
+CREATE TABLE Offices (
+    office_id INT PRIMARY KEY,
+    building VARCHAR(255) NOT NULL,
+    floor INT NOT NULL,
+    room_number INT NOT NULL,
+    area FLOAT NOT NULL,
+    UNIQUE (building, floor, room_number)
+);
+
+
+CREATE TABLE Employees (
+    emp_id TEXT,
+    name TEXT NOT NULL,
+    office_id TEXT,
+    manager_id TEXT,
+    PRIMARY KEY(emp_id),
+    FOREIGN KEY (office_id)
+        REFERENCES Offices (office_id)
+        ON UPDATE CASCADE,
+    FOREIGN KEY (manager_id)
+        REFERENCES Employees (emp_id)
+        ON UPDATE CASCADE
+);
+
+actions: what should happen if my reference value got deleted or updated?
+Any modification to office_id in Offices is propagated to other database records.
+Any modification to emp_id in Employees is propagated to other database records.
+
+propagate = CASCADE
+ON UPDATE
+ON DELETE 
+
+-- Create Employees table
+CREATE TABLE Employees (
+    emp_id INT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    office_id INT,
+    manager_id INT,
+    FOREIGN KEY (office_id) REFERENCES Offices(office_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+        -- A record in Offices cannot be removed if there’s some employee 
+        -- assigned to that office
+    FOREIGN KEY (manager_id) REFERENCES Employees(emp_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+        -- ON DELETE RESTRICT for the manager_id foreign key ensures that if a manager 
+        -- is being deleted, the deletion will be restricted if there are other employees 
+        -- referencing that manager. The manager cannot be removed until there are no 
+        -- remaining employees managed by them.
+);
+
+3.
+
+each book has unique identifier
+must have positive value = price is not null and >0
+
+
+-- Create Books table
+CREATE TABLE Books (
+    isbn VARCHAR(20) PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    authors VARCHAR(255) NOT NULL,
+    year INT,
+    edition VARCHAR(20) CHECK (edition IN ('paperback', 'hardcover', 'ebook')),
+    publisher VARCHAR(255),
+    number_pages INT CHECK (number_pages > 0 OR number_pages IS NULL),
+    price DECIMAL(10, 2) CHECK (price > 0)
+);
+
+-- Create Customers table
+CREATE TABLE Customers (
+    cust_id INT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL
+);
+
+-- Create Carts table
+CREATE TABLE Carts (
+    cust_id INT,
+    isbn VARCHAR(20),
+    PRIMARY KEY (cust_id, isbn),
+    FOREIGN KEY (cust_id) REFERENCES Customers(cust_id),
+    FOREIGN KEY (isbn) REFERENCES Books(isbn)
+);
+
+when customer purchase book, new record is created 
+attribute name can never be just date
+
+-- Create Purchase table
+CREATE TABLE Purchase (
+    pid SERIAL PRIMARY KEY,
+    purchase_date DATE NOT NULL,
+    cust_id INT,
+    FOREIGN KEY (cust_id) REFERENCES Customers(cust_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+-- Create Purchased_items table
+CREATE TABLE Purchased_items (
+    pid INT,
+    isbn VARCHAR(20),
+    PRIMARY KEY (pid, isbn),
+    FOREIGN KEY (pid) REFERENCES Purchase(pid),
+    FOREIGN KEY (isbn) REFERENCES Books(isbn)
+);
+
+
+b.
+
+at most 1 purchase at any time stamp 
+
+CREATE TABLE Purchase (
+    pid SERIAL PRIMARY KEY,
+    purchase_timestamp TIMESTAMP NOT NULL,
+    cust_id INT,
+    FOREIGN KEY (cust_id) REFERENCES Customers(cust_id)
+    UNIQUE (purchase_timestamp, cust_id) -- only 1 purchase at any time stamp
+);
+
+c.
+
+p -> q = -p V q
+
+
+If a book is a hardcover edition, its selling price must be at least 30.
+-- Modify Books table for constraint 1
+ALTER TABLE Books
+ADD CONSTRAINT chk_hardcover_price
+CHECK (
+    NOT (edition = 'hardcover' AND price < 30)
+);
+
+If a book has both hardcover and paperback editions (for the same book title 
+and authors), the selling price for the hardcover edition must be higher than 
+the selling price for the paperback edition.
+This constraint involves a comparison between two rows for the same book title
+and authors. It's challenging to express this directly using standard SQL CHECK 
+constraints. However, you can use triggers or application logic to enforce this 
+condition.
+
+since its across multiple rows it cant be implemented
+
+
+
+If the number of pages in a book is more than 1000, the edition of the book must 
+be an ebook or its price must be at least 100.
+-- Modify Books table for constraint 3
+ALTER TABLE Books
+ADD CONSTRAINT chk_large_book
+CHECK (
+    number_pages <= 1000 OR (edition = 'ebook' OR price >= 100)
+);
+
+
+d.
+All the books published by “Acme” from 2010 onwards have only an ebook edition.
+
+-- Modify Books table for constraint 4
+UPDATE Books
+SET edition = 'ebook'
+WHERE publisher = 'Acme' AND year >= 2010;
+
+-- Add CHECK constraint to enforce the condition
+ALTER TABLE Books
+ADD CONSTRAINT chk_acme_books
+CHECK (
+    NOT (publisher = 'Acme' AND year >= 2010 AND edition <> 'ebook')
+);

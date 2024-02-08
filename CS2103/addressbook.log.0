@@ -1,0 +1,66 @@
+Feb 01, 2024 3:24:36 PM seedu.address.Main main
+WARNING: The warning about Unsupported JavaFX configuration below can be ignored.
+Feb 01, 2024 3:24:37 PM seedu.address.MainApp init
+INFO: =============================[ Initializing AddressBook ]===========================
+Feb 01, 2024 3:24:37 PM seedu.address.MainApp initConfig
+INFO: Using config file : config.json
+Feb 01, 2024 3:24:37 PM seedu.address.MainApp initConfig
+INFO: Creating new config file config.json
+Feb 01, 2024 3:24:37 PM seedu.address.MainApp initPrefs
+INFO: Using preference file : preferences.json
+Feb 01, 2024 3:24:37 PM seedu.address.MainApp initPrefs
+INFO: Creating new preference file preferences.json
+Feb 01, 2024 3:24:37 PM seedu.address.commons.core.LogsCenter init
+INFO: Log level will be set as: INFO
+Feb 01, 2024 3:24:37 PM seedu.address.MainApp initModelManager
+INFO: Creating a new data file data/addressbook.json populated with a sample AddressBook.
+Feb 01, 2024 3:24:38 PM seedu.address.MainApp start
+INFO: Starting AddressBook V0.2.2ea
+Feb 01, 2024 3:24:38 PM seedu.address.ui.UiManager start
+INFO: Starting UI...
+Feb 01, 2024 3:25:23 PM seedu.address.logic.LogicManager execute
+INFO: ----------------[USER COMMAND][help]
+Feb 01, 2024 3:25:24 PM seedu.address.ui.MainWindow executeCommand
+INFO: Result: Opened help window.
+Feb 01, 2024 3:25:27 PM seedu.address.logic.LogicManager execute
+INFO: ----------------[USER COMMAND][help]
+Feb 01, 2024 3:25:27 PM seedu.address.ui.MainWindow executeCommand
+INFO: Result: Opened help window.
+Feb 01, 2024 3:26:44 PM seedu.address.logic.LogicManager execute
+INFO: ----------------[USER COMMAND][add n/eunice koh p/87481424 e/eunicekoh46@gmail.com a/762317]
+Feb 01, 2024 3:26:44 PM seedu.address.ui.MainWindow executeCommand
+INFO: Result: New person added: eunice koh; Phone: 87481424; Email: eunicekoh46@gmail.com; Address: 762317; Tags: 
+Feb 01, 2024 3:31:30 PM seedu.address.logic.LogicManager execute
+INFO: ----------------[USER COMMAND][list]
+Feb 01, 2024 3:31:30 PM seedu.address.ui.MainWindow executeCommand
+INFO: Result: Listed all persons
+Feb 01, 2024 3:31:38 PM seedu.address.logic.LogicManager execute
+INFO: ----------------[USER COMMAND][delete 6]
+Feb 01, 2024 3:31:38 PM seedu.address.ui.MainWindow executeCommand
+INFO: Result: Deleted Person: Roy Balakrishnan; Phone: 92624417; Email: royb@example.com; Address: Blk 45 Aljunied Street 85, #11-31; Tags: [colleagues]
+Feb 01, 2024 3:32:21 PM seedu.address.logic.LogicManager execute
+INFO: ----------------[USER COMMAND][ww]
+Feb 01, 2024 3:32:21 PM seedu.address.ui.MainWindow executeCommand
+INFO: An error occurred while executing command: ww
+Feb 01, 2024 3:32:22 PM seedu.address.logic.LogicManager execute
+INFO: ----------------[USER COMMAND][ww]
+Feb 01, 2024 3:32:22 PM seedu.address.ui.MainWindow executeCommand
+INFO: An error occurred while executing command: ww
+Feb 01, 2024 3:32:24 PM seedu.address.logic.LogicManager execute
+INFO: ----------------[USER COMMAND][rere]
+Feb 01, 2024 3:32:24 PM seedu.address.ui.MainWindow executeCommand
+INFO: An error occurred while executing command: rere
+Feb 01, 2024 3:32:24 PM seedu.address.logic.LogicManager execute
+INFO: ----------------[USER COMMAND][rere]
+Feb 01, 2024 3:32:24 PM seedu.address.ui.MainWindow executeCommand
+INFO: An error occurred while executing command: rere
+Feb 01, 2024 3:32:26 PM seedu.address.logic.LogicManager execute
+INFO: ----------------[USER COMMAND][lis]
+Feb 01, 2024 3:32:26 PM seedu.address.ui.MainWindow executeCommand
+INFO: An error occurred while executing command: lis
+Feb 01, 2024 3:32:28 PM seedu.address.logic.LogicManager execute
+INFO: ----------------[USER COMMAND][lislis]
+Feb 01, 2024 3:32:28 PM seedu.address.ui.MainWindow executeCommand
+INFO: An error occurred while executing command: lislis
+Feb 01, 2024 3:32:33 PM seedu.address.MainApp stop
+INFO: ============================ [ Stopping Address Book ] =============================
