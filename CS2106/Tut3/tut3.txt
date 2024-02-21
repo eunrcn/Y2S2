@@ -1,0 +1,118 @@
+q1 understanding scheduling algorithm
+highest priority will start first 
+f d c a e b
+0 2 8 12 20 21 26
+turnaround time = total /6 = 14.8 
+
+first come first serve 
+a b c d e f
+0 8 13 17 23 24 26
+
+total/6 = 18.5
+0+8+13+17+23+24+26/6 = 18.5
+
+shortest job first 
+least running time will go first
+e f c b d a 
+0 1 3 7 12 18 26
+least mean turn around time at 11.1
+
+q2 
+program a, arrive at time 0
+c3 io1 c3 io1 
+
+program b, arrive at time 0
+c1, io2, c1, io2, c2, io1
+
+program c, arrives at time 3, will be added into queue
+c2
+
+
+     0 1 2 3 4 5 6 7 8 9 10 11 12 13 14
+cpu   a a a b c c a a a b        b  b 
+i/o         a b b       a  b  b        b
+queue 
+
+a and b and c will enter and leave queue
+first in first out
+
+   turnaround time               waiting time                                      response time 
+a   arrive at 0, finish at 10    turnaround - work done - io waiting time          what time did it arrive and processed 
+    10-0                         10 - 8 - 0 = 2                                    processed immediately =0
+b   15 bc finish at 15           15 - 9 - 0                                        3-0 =3
+c   6-3=3                        3-2-0=1                                           4-3=1
+
+
+round robin with time quantum of 2 time units
+cpu time taken is max 2 seconds
+"time quantum" refers to the maximum amount of time that a
+process is allowed to run in a single burst before it is
+preempted and another process is given a chance to 
+execute. 
+
+
+     0 1 2 3 4 5 6 7 8 9 10 11 12 13 14
+cpu   a a b a c c b a a b b a 
+i/o         b b a   b b     a a
+queue 
+
+response time
+diff between arrival and first time task receive cpu time 
+a 0
+b 2-0=2
+c 4-3=1
+
+
+q3 mlfq scheduling behaviour
+a process with lengthy cpu intensive phase followed by
+io intensive phase
+
+time quantum of 2 
+if a total time is 10
+it will run first for 2 sec 
+then priority will go to 2 and run for 2 second
+and priority will go to 3,..,4,..,5..
+
+process can sink to lowest priority during cpu intensive
+phase since it will fully utilize its time slice
+with low priority, higher priority programs will run first
+this low priority process may not ever receive cpu time in 
+timely fashion, which degrades the responsiveness
+it may never get to io phase 
+
+if a process repeatedly gives up cpu just before the time
+quantum lapses, it will retain its priority
+since all processes enter the system with highest priority,
+a process can keep high priority using this trick and receive
+disportionately more time than other processes
+
+cpu usage of a process is now accumulated across tiem quanta, 
+once the cpu usage exceeds a single time quantum, priority
+this tweak fixes the prev
+
+all process in the system will be moved to the highest level 
+periodically
+fixes the first senario where priority will be stuck and 
+never be able to run
+starvation is not permanant, timely boosts for lowest priority
+
+under what conditions does robin robin scheduling behave 
+as FIFO?
+if job length is shorter than time quantum, it is 
+essentially a pre-emptive variant of FIFO
+bc it will never hit its time quantum and will never
+increase in priority
+
+in what condition does RR scheduling perform poorly compared to FIFO
+if the job is too long , time quantum too short
+too much context switching
+alot of overhead
+fifo is better if there are very few processes of long time
+
+under what conditions does FCFS (FIFO) scheduling result in the 
+shortest possible average response time?
+fifo minimizes average response time if jobs arrive in the ready queue
+in order of increasing job lengths
+this avoids short jobs arriving later from waiting substantially for an 
+earlier longer job
+

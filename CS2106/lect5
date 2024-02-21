@@ -1,0 +1,98 @@
+switching kernel mode is expensive 
+
+fork
+process space is duplicated
+programme counter for second process is at the same place 
+child will get 0 and go to else statement
+
+every thread will have its own stacks and hardware 
+hwo come stack is seperate?
+share same range of memory for the stack
+
+can a thread makes function calls
+yes
+in order for stacks to not override each other, separate stacks
+pass an array to each thread and tell it to use the array
+
+begin with 1 process
+it forks
+memory context and OS context is duplicated
+for each of these threads, they share code data files
+they have separate registers and stack
+
+stack pointer for each stack 
+thread 1 start at 0
+thread 2 start at 1024
+so we dont switch stack but we just maintain stack value
+memory context and os context
+some values we need to switch over 
+in addition to hardware context, there are other thigns i need to switch 
+
+process context switch involves switching os context, hardware context and mem context
+thread siwtch only need to switch hardware context (pcs and stack)
+stack- just fp and sp register values
+
+threads are lighter than processes, even called light weigh processes
+economy - far less resource to manage threads than processes 
+resource sharing - since we share mem we can share resources, number of syscalls is
+smalller, number of switches to kernal mode is smaller, save more time
+responsiveness multithreaded programes appear more responsive
+scalability - take advantage of multiple cpu
+
+why is chrome new tab a process but not a thread? dont wanna share memory
+one misbehaving thread can steal infomation from another thread
+system call concurrency
+parallel system calls
+
+problem of thread is parallel execution of multiple threads -> parallel syscall possible
+fork() duplicate prcoess, what about threads
+if a single thread execute exit what about the whole process?
+if a single thread calls exec, how about other threads?
+
+how are threads implemented?
+user thread 
+user library and a runtime system that will handle thread related operation
+kernel not aware of threads
+
+in kernel thread, thread is implemented in the os 
+kernel is aware of threads and it can scedule individual threads 
+can perform things in parallel
+
+thread table -> maintian info about the threads including things like hardware of thread 
+within the os, all it maintains is process table
+pros and cons of user threads
+pros 
+multithreaded program on any os 
+thread opertation are just lib calls, dont incur cost of swith to kernal mode
+customize thread library to more configurable and flexible
+
+cons
+os not aware of thread
+if one thread makes a hardware call, like read(massive file)
+os will think this process is reading the file
+move process to block state
+all other threads will also move to blocked state
+
+share same cpu, only one thread can run at a time
+
+hybrid thread model
+have both kernel and user threads
+kernel threads are not processes
+bc i dont need switch mem context 
+
+offer greate flexibility
+con limit the concurrench of sny process/user
+
+user thread mapped into a kernel thread 
+for process 3 i give 2 kernel threads, up to them how they wanna map
+
+pthread
+
+#include <pthread.h>
+
+-lpthread
+
+pthread_t data type to represent a thread is 
+pthread_attr data type tor represent attributes of a thread 
+pthread_join 
+

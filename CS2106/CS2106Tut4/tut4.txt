@@ -1,0 +1,63 @@
+d. reducing time quantum for round robin to help its performance wrt fcfs
+
+yes(RR better performance):
+reducing time quantum reduces the waiting time for a task to first receive
+cpu time, improving initial response time (responsiveness)
+
+RR with smaller TQ can ensure the shorter processes receive CPU resources more 
+frequently, preventing them from being starved by longer processes 
+
+no(RR worse performance):
+reducing time quantum increases the amount of CPU time spent by the OS performing context
+switching, reducing 
+
+e.Do you think a CPU-bound (CPU-intensive) process should be given a higher priority 
+for I/O than an I/O-bound process? Why?
+
+
+
+0600
+6-owner
+0-group
+0-others
+
+4-read
+2-write
+1-execute
+
+6=4+2
+
+Expected Final Value=n×(nChild+1)
+./shm 1000 3   
+
+
+Higher n Value:
+With a higher value of n, the chances of race conditions increase, as multiple processes are trying to access and modify the shared memory concurrently.
+The final result might be affected by the order in which the processes execute.
+
+Race Conditions:
+Due to the lack of synchronization mechanisms (e.g., locks or semaphores),
+there may be situations where processes read and write to the shared memory 
+simultaneously.
+Race conditions can lead to unexpected results, and the final value may vary 
+between runs.
+
+
+Race conditions can still occur even on a single-core processor due to the 
+interleaved execution of processes and threads. While only one process may
+be actively executing at any given moment on a single core, the operating 
+system can still switch between processes rapidly, leading to interleaved 
+execution.
+
+Here's a simplified explanation of how a race condition can occur:
+
+Process Switching: Even on a single-core processor, the operating system can 
+switch between different processes.
+
+Interrupts: Interrupts, such as timer interrupts or I/O interrupts, can cause 
+the operating system to temporarily suspend the execution of one process and 
+switch to another.
+
+Shared Resource Access: If multiple processes share a common resource (such
+as shared memory in your case), and they do not use proper synchronization
+mechanisms, there is a possibility of race conditions.

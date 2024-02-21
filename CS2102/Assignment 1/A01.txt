@@ -1,0 +1,7 @@
+2. 
+
+SELECT DISTINCT t.tname AS name,
+                t.syear AS start_year
+FROM Titles t
+WHERE t.tid NOT IN (SELECT ts.tid FROM TvSeries ts) -- Exclude TV series titles
+      AND t.syear >= 1960;

@@ -1,0 +1,268 @@
+(a) To find all restaurant names located in the 'East'
+SELECT rname
+FROM Restaurants
+WHERE area = 'East';
+
+(b) To find all areas with at least one customer
+SELECT DISTINCT area
+FROM Customers;
+
+(c) To find all the pizzas sold by 'Corleone Corner'
+SELECT DISTINCT pizza
+FROM Sells
+WHERE rname = 'Corleone Corner';
+
+(a)
+SELECT DISTINCT cname
+ FROM Likes L
+ WHERE EXISTS (
+ SELECT 1
+ FROM Sells S
+ WHERE S.rname = 'Corleone Corner 'AND S.pizza = L.pizza
+);
+
+outer query:
+find all distinct customers that like a pizza
+
+inner query:
+pizza sold by corleone corner 
+
+combined:
+find all distinct customers that like a pizza such that it
+is sold by corleone corner
+
+SELECT distinct cname
+FROM Likes L, Sells S
+WHERE L.pizza = S.pizza
+AND S.rname = 'Corleone Corner'
+
+my ans:
+SELECT DISTINCT L.cname
+FROM Likes L, Sells S
+WHERE S.rname = 'Corleone Corner' AND S.pizza = L.pizza;
+
+
+
+(b)
+inner query:
+find whether a particular customer likes at least one pizza 
+sold by Corleone Corner
+
+
+outer query:
+find all customers that do not something
+
+combined:
+find all customers that that do not like any pizza sold 
+Corleone Corner
+
+set theory: EXCEPT
+A - B 
+do A query and remove B query
+find all customers and remove those that like
+
+SELECT cname
+FROM Customers
+
+EXCEPT 
+
+SELECT cname
+FROM Likes L, Sells S
+WHERE S.rname = 'Corleone Corner'
+AND L.pizza = S.pizza
+
+
+my ans:
+SELECT DISTINCT C.cname
+FROM Customers C
+JOIN Likes L ON C.cname = L.cname
+LEFT JOIN Sells S ON S.rname = 'Corleone Corner' AND S.pizza = L.pizza
+WHERE S.rname IS NULL;
+
+select 1 is not to retrieve actual data but to check for 
+existence of at least 1 row that satisfies the constraints
+
+(c)
+inner: 
+find all price from all pizza that Corleone Corner Sells
+
+outer 
+find all restaurant that have pizzas more expensive than
+any pizza sold by Corleone Corner
+
+combined:
+find all restaurants (that are not Corleone Corner) that 
+have a pizza that is more expensive than any pizza sold
+by Corleone Corner
+
+SELECT DISTINCT rname
+FROM Sells S, Sells S2 //implicit joins with the comma notation
+WHERE S.rname <> 'Corleone Corner' // first one not Corleone Corner
+AND S2.rname = 'Corleone Corner' // second one is Corleone Corner
+AND S.price > S2.price;
+
+my ans:
+SELECT DISTINCT S1.rname
+FROM Sells S1
+JOIN Sells S2 ON S1.rname <> 'Corleone Corner' AND S1.price > S2.price
+WHERE S2.rname = 'Corleone Corner';
+
+(d)
+inner 
+find all non null prices of a particular restaurant
+conner case: whatever i select from is not null
+
+outer:
+find (triple value) for a restaurant that has pizza greater
+than all other prices from a same restaurant
+find the most expensive pizza from each restaurant
+
+combined
+find (triple value) for a restaurant that has a pizza with 
+price greater than all non null prices of that same restaurant
+
+
+find all pizza and minus everything thats not the most
+expensive 
+
+SELECT rname, pizza, price 
+FROM Sells
+WHERE price IS NOT NULL
+
+EXCEPT
+
+SELECT S.rname, S.pizza, S.price
+FROM Sells S, Sells S2
+WHERE S.rname = S2.rname
+AND S.price < S2.price 
+
+
+my ans:
+SELECT S.rname, S.pizza, S.price
+FROM Sells S
+LEFT JOIN Sells S2 ON S.rname = S2.rname AND S2.price IS NOT NULL
+GROUP BY S.rname, S.pizza, S.price
+HAVING S.price >= ALL(COALESCE(S2.price, 0));
+
+3. complex query
+Write an SQL query to answer each of the following questions on the pizza database
+without using aggregate functions. Remove duplicate records from all query results.
+(a) Find pizzas that Moe likes but is not liked by Lisa.
+(b) Find pizzas that are sold by at most one restaurant in each area; exclude pizzas that are not sold
+by any restaurant.
+(c) Find all tuples (A, P, Pmin) where P is a pizza that is available in area A (i.e., there is some
+restaurant in area A selling pizza P ) and Pmin is the lowest price of P in area A.
+(d) Find the most expensive pizzas and the restaurants that sell them (at the most expensive price).
+
+
+
+(a)
+how to combine basic query together
+
+decompose first
+find pizza that moe likes?
+LIKES WHERE cname = moe
+find pizza that lisa does not like?
+set theory? EXCEPT?
+find all pizza - liked by lisa
+
+how to compose them together?
+EXCEPT again
+
+correct ans 1:
+SELECT pizza FROM LIKES WHERE cname = 'Moe'
+EXCEPT
+SELECT pizza FROM Likes WHERE cname = 'Lisa'
+
+correct ans 2:
+SELECT pizza FROM Likes
+WHERE cname = 'Moe'
+    AND pizza NOT IN (
+        SELECT pizza FROM Likes 
+        WHERE cname = 'Lisa'
+);
+inner query not reccomend
+
+
+my ans:
+SELECT DISTINCT L1.pizza
+FROM Likes L1
+LEFT JOIN Likes L2 ON L1.pizza = L2.pizza AND L2.cname = 'Lisa'
+WHERE L1.cname = 'Moe' AND L2.pizza IS NULL;
+
+(b)
+Find pizzas that are sold by at most one restaurant in each area; exclude pizzas that are not sold by any restaurant:
+
+find all pizza sold by a restaurant
+remove those pizza sold by 2 restaurants in a area
+
+SELECT DISTINCT pizza 
+FROM Sells S
+
+EXCEPT
+
+SELECT DISTINCT pizza 
+FROM Sells S, Restaurant R, Sells S2, Restaurant R2
+// need to get info on area
+// first join S and R
+WHERE S.rname = R.rname
+// second join s2 and R2
+AND S2.rname = R2.rname
+// third join between this 2 area
+AND R.area = R2.area 
+// 2 same pizza sold by sold by diff restaurants
+AND R.rname <> R2.name 
+AND S.pizza = S2.pizza 
+
+how will the ans change if we include pizza that are not sold 
+by an restaurant?
+SELECT DISTINCT pizza 
+FROM Pizza S
+
+EXCEPT
+
+SELECT DISTINCT pizza 
+FROM Sells S, Restaurant R, Sells S2, Restaurant R2
+// need to get info on area
+// first join S and R
+WHERE S.rname = R.rname
+// second join s2 and R2
+AND S2.rname = R2.rname
+// third join between this 2 area
+AND R.area = R2.area 
+// 2 same pizza sold by sold by diff restaurants
+AND R.rname <> R2.name 
+AND S.pizza = S2.pizza 
+
+(c) 
+cheapest pizza out of ana area 
+Find all tuples (A, P, Pmin) where P is a pizza that is available in area A and Pmin is the lowest price of P in area A:
+
+SELECT DISTINCT R.area, S.pizza, S.price
+FROM Restaurants R, Sells S
+WHERE R.rname = S.rname 
+// for each pizza in each area, get the cheapest one
+AND S.price <= ALL (
+    SELECT S2.price
+    FROM Restaurant R2, Sells S2
+    WHERE R2.rname = S2.rname 
+    and R2.area = R.area
+)
+
+
+
+
+
+(d)
+Find the most expensive pizzas and the restaurants that sell them (at the most expensive price):
+
+get all pizza and remove those that dont meet conditnion
+most expensive and cheapest need sub query
+
+SELECT pizza, rname
+FROM Sells
+WHERE price >= ALL (
+    SELLECT price FROM Sells
+)
+
+

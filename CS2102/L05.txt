@@ -1,0 +1,110 @@
+MIN()
+AVG()
+MAX()
+COUNT() - count the rows
+SUM()
+
+only look at non-null values
+SUM(DISTINCT) - non duplicates
+
+if the set is fully null, the min() will be null
+count will be 0 
+count(*) will count null values 
+
+
+GROUP BY rname;
+IS NOT DISTINCT FROM
+
+
+group by clause
+aggregation function
+candidate keys not accepted in postgres sql
+
+group by attr1, attr2
+having condition
+
+find all the restaurants and the average price such that the avg
+price is cheaper than any pizza sold by mama place
+select distinct rname, avg(price)
+from Sells
+group by rname
+having avg(price) < (
+    select price 
+    from Sells
+    where rname = 'mamas place'
+);
+
+from
+where 
+group by
+having
+select 
+order by
+limit offset
+
+case 
+    when 
+    when
+    wehn
+    else
+end
+
+catagorize restaurant to avaerage price
+ex/cheap/reasonable
+
+select rname, case
+        when avg(price) >= 23 then 'ex'
+        else 'cheap'
+    end
+from Sells
+group by rname 
+
+select rname
+    COALESCE (third, second, first) AS result the order matter
+from Quiz;
+
+how to produce null?
+NULLIF (value 1, value2)
+if value 1 = value 2 eval to true then will be null 
+1=1 so null
+2,1 will return 2
+
+
+cant be null for price
+if dont know price yet, put 1
+1 is unknown
+min(nullif(price, 1)) AS min_price
+it will remove all instances of 1 and treat it as null 
+
+table expression, structure queries
+find 3 cheapest pizza
+incomplete solution
+select *
+from Sells
+order by price asc
+limit 5
+
+complete solution
+put in from clause
+select *
+from (
+    select * from sells order by price asc limit 3
+) T1
+order by price desc;
+
+Common Table Expression
+dont make unless the qn asks to make
+
+external schema
+instead of create table, create view
+types can be omited
+a more permanant table
+warning: not allowed to use view for assignment 1 and midterms
+ 
+ insert update delete- updatable view
+
+extended concepts
+all pizza that homer likes that is not sold by rname restaurant
+de morgans law
+
+ 
