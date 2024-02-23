@@ -1,0 +1,208 @@
+query 1 has count applied to rows and query 2 count is applied to groups
+aggregate is applied to rows vs aggregate applied to groups
+
+case 1
+a=10
+b=1
+c=null
+q1 will give 0 
+q2 will give 0
+is good, equivalent
+
+case 2
+a=11
+b=1
+c=null
+
+since c is null and a is not equal to 10, 
+q1 will give 0 
+q2 = empty groups give empty instead of 0 
+
+case 3
+c is null and a is 10 and 11
+no issue
+
+case 4
+c is not null and a =10
+both will give 1
+
+case 5
+no output and 
+count on empty set of rows is 0 and 
+count on empty set of groups is empty
+
+diff between 0 and empty
+0 is return 0
+empty will be column headers and nothing else
+
+
+q2
+decomposition
+can you find the most expensive pizza by R1
+SELECT MAX(price) 
+FROM sells
+WHERE restaurant is R1
+
+can you find the most expensive pizza by R2
+SELECT MAX(price) 
+FROM sells
+WHERE restaurant is R2
+
+can you find all the paires (R1, R2)?
+Restaurant R1
+JOIN Restaurant R2
+
+how to compose?
+
+
+SELECT R1.rname, R2.rname
+FROM Restaurant R1, Restaurant R2
+WHERE (
+    SELECT MAX(price) FROM sells
+    WHERE rname = R1.rname
+) > (
+    SELECT MAX(price) FROM sells
+    WHERE rname = R2.rname
+);
+
+OR use CTE
+WITH RestMaxPrice AS (
+    SELECT rname,
+)
+
+
+
+2b
+average price of a restaurant?
+SELECT AVG(price) of Sells 
+WHERE Restaurant is R1
+
+condition: average > 22
+
+SELECT rname, AVG(price) AS average_price
+FROM Sells
+GROUP BY rname
+HAVING AVG(price) > 22;
+
+diff between where and having
+where always happens before groups 
+from where groupby HAVING
+if i want condition to be applied on groups and restaurant
+i need to have having after groupby 
+the diff is where the condition is being applied 
+
+when we are using aggregates we will always use having/
+when we want condition on group, use having
+
+
+if use CTE
+WITH RestAvgPrice AS (
+    SELECG rname, AVG(price) AS avgPrice
+    From Sells
+    GROUP BY rname
+)
+
+SELECT *
+FROM RestAvgPrice
+WHERE avgPrice > 22
+
+Can I find the total Price of each restaurant?
+SELECT SUM(price) FROM Sells WHERE restaurant is R1
+
+condtion: total price of each restaurant > Avg of all the other totals
+
+first solution is CTE
+get total price of each rest first
+create a new table that has all the prices 
+
+WITH RestTotalPrice AS (
+    SELECT rname, SUM(price) AS totalPrice
+    FROM Sells
+    GROUP BY rname
+)
+
+SELECT rname, totalPrice
+FROM RestTotalPrice
+WHERE totalPrice > (
+    SELECT AVG(totalPrice) FROM 
+        RestTotalPrice
+)
+
+without CTE
+convert to 
+avg of all other totals = sum of every price / no of distinct rest
+
+SELECT rname, SUM(price) AS totalPrice
+FROM Sells
+GROUP BY rname
+HAVING SUM(price) > (
+    SELECT SUM(price) / COUNT(DISTINCT rname)
+    FROM Sells
+);
+
+    
+SELECT rname, SUM(price) AS totalPrice
+FROM Pizza
+GROUP BY rname
+HAVING SUM(price) > (
+    SELECT AVG(totalPrice)
+    FROM (
+        SELECT SUM(price) AS totalPrice
+        FROM Pizza
+        GROUP BY rname
+    ) AS AvgTotalPrice
+);
+
+2d 
+Find the customer pairs (C1, C2) such that C1 < C2 and they like exactly 
+the same pizzas. Exclude customer pairs that do not like any pizza.
+
+with except remove c2 from c1 and likes and dislikes
+
+without except 
+
+find all pairs of customers
+customer join customers
+condition:C1 likes should be exactly smae as C2 likes
+
+1. for every pizza that C1 likes, C2 should like 
+2. for every pizza that C2 likes, C1 should like
+
+use relational algebra
+~~A=A
+
+SELECT C1.cname, C2.cname
+FROM Customers C1, Customers C2
+WHERE C1.cname < C2.cname
+AND EXISTS (
+    SELECT 1 FROM Likes L WHERE L.cname = C1.cname
+)
+
+AND NOT EXISTS (
+    SELECT 1
+    FROM Likes L1
+    WHERE L1.cname = C1.cname
+    AND NOT EXISTS (
+        SELECT 1
+        FROM Likes L2
+        WHERE L2.cname = C2.cname
+        AND L1.pizza = L2.pizza 
+    )
+)
+
+AND NOT EXISTS (
+    SELECT 1
+    FROM Likes L1
+    WHERE L1.cname = C2.cname
+    AND NOT EXISTS (
+        SELECT 1
+        FROM Likes L2
+        WHERE L2.cname = C1.cname
+        AND L1.pizza = L2.pizza 
+    )
+)
+
+
+
+
+
