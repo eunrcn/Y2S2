@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Clear the result.out file at the beginning of the script
+echo -n > "results.out"
+echo -n > "subs/A0285757B/results.out"
+echo -n > "subs/A0183741Y/results.out"
+echo -n > "subs/A0281754H/results.out"
+
+
 # Check if exactly one argument is supplied
 if [ "$#" -ne 1 ]; then
     echo "Usage: ./grade.sh <filename>"
@@ -33,11 +40,11 @@ for student_dir in subs/*/; do
     result_file="$student_dir/results.out"
 
     # Compile the code in the student's directory
-    if gcc $student_dir/*.c -o $1 2> $result_file; then
+    if gcc "$student_dir"/*.c -o "$1" 2>/dev/null; then
         echo "Compilation successful for directory $student_id."
     else
-        echo "Directory $student_id has compile error." >> $result_file
-        echo "Directory $student_id score 0 / $(ls ref/*.in | wc -l)" >> $result_file
+        echo "Directory $student_id has a compile error." >> "$result_file"
+        echo "Directory $student_id score 0 / $(ls ref/*.in | wc -l)" >> "$result_file"
         total_files=$((total_files + 1))
         continue
     fi

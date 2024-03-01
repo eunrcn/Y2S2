@@ -1,0 +1,25 @@
+as long as its not pointing to the top of the machine thing, it does not create the machine object
+
+the stick is activation bar, shows the execution of the method
+lifetime of the method invocation
+
+if the arrow is pointing to the object, it is a constructor creating an instance of the object
+
+activation bar on the top and bottom
+The top is for unit() and the bottom is for stresstest()
+
+The loop is calling the method stressTest() 5 times
+
+self invocation when a method points to a activation bar
+paths of entry
+the cross stands for garbage collectors
+
+
+alt meaning when its inside of a opt box
+No more than one alternative partitions be executed in an alt frame. That is, it is acceptable for none of 
+the alternative partitions to be executed but it is not acceptable for multiple partitions to be executed.
+
+if none of alt is valid, is possible for neither to be called
+
+if the alt is not wrapped with opt, one of them must be called
+

@@ -1,12 +1,14 @@
-#include <unistd.h>
 #include <stdio.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 int main() {
-    if(fork() ==  0) {
-        execlp("cat", "cat", "file.txt", NULL);
-    }
-    else
-        wait(NULL);
-}
+  if (fork() == 0) {
+    char *args[] = {"cat", "file.txt", NULL};
+    execvp("cat", args);
+  } else {
+    wait(NULL);
+  }
 
+  return 0;
+}
