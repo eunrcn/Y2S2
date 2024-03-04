@@ -1,7 +1,115 @@
+1. 
+
+SELECT 
+  pname AS name,
+  2023 - birth AS age
+FROM people
+WHERE death IS NULL
+
 2. 
 
-SELECT DISTINCT t.tname AS name,
-                t.syear AS start_year
+https://thisisadi.yoga/cs2102/2320/
+
+SELECT DISTINCT t.tname AS title,
+                t.syear AS syear
 FROM Titles t
-WHERE t.tid NOT IN (SELECT ts.tid FROM TvSeries ts) -- Exclude TV series titles
+WHERE t.tid NOT IN (SELECT ts.tid FROM TvSeries ts)
       AND t.syear >= 1960;
+
+
+3. 
+SELECT DISTINCT P.pname AS director, T.tname AS title
+FROM Produces P
+JOIN Titles T ON P.tid = T.tid
+JOIN Genres G ON T.tid = G.tid
+WHERE P.task = 'director' and G.genre = 'Drama';
+
+4.
+SELECT
+  P.pname AS name,
+  P.birth,
+  P.death
+FROM
+  People P
+LEFT JOIN
+  PlaysIn PI ON P.pname = PI.pname
+WHERE
+  PI.pname IS NULL;
+
+
+
+6.
+SELECT
+  P.pname AS name,
+  COUNT(DISTINCT PI.tid) AS count
+FROM
+  People P
+JOIN
+  PlaysIn PI ON P.pname = PI.pname
+JOIN
+  Titles T ON PI.tid = T.tid
+WHERE
+  P.pname <> 'Marlene Dietrich'
+GROUP BY
+  P.pname
+HAVING
+  COUNT(DISTINCT PI.tid) > (
+    SELECT COUNT(DISTINCT PI_Marlene.tid)
+    FROM People P_Marlene
+    JOIN PlaysIn PI_Marlene ON P_Marlene.pname = PI_Marlene.pname
+    WHERE P_Marlene.pname = 'Marlene Dietrich'
+  );
+
+
+7.
+SELECT pname, birth, death
+FROM People
+WHERE LENGTH(pname) - LENGTH(REPLACE(pname, ' ', '')) >= 2;
+
+8.
+SELECT
+    T.tname AS title,
+    E.season,
+    E.epnum AS episode,
+    E.epname AS name
+FROM
+    Titles T
+JOIN
+    TvSeries TS ON T.tid = TS.tid
+JOIN
+    Episodes E ON TS.tid = E.tid
+WHERE
+    T.eyear IS NOT NULL
+ORDER BY
+    T.tname ASC,
+    E.season DESC,
+    E.epnum ASC;
+
+10. 
+
+SELECT DISTINCT P.pname AS name, G.genre AS genre
+FROM People P
+JOIN PlaysIn PI ON P.pname = PI.pname
+JOIN Genres G ON PI.tid = G.tid
+WHERE P.pname != 'James Dean'
+AND (
+    SELECT COUNT(DISTINCT G2.genre)
+    FROM People P2
+    JOIN PlaysIn PI2 ON P2.pname = PI2.pname
+    JOIN Genres G2 ON PI2.tid = G2.tid
+    WHERE P2.pname = P.pname
+    AND G2.genre IN (
+        SELECT DISTINCT G3.genre
+        FROM People P3
+        JOIN PlaysIn PI3 ON P3.pname = PI3.pname
+        JOIN Genres G3 ON PI3.tid = G3.tid
+        WHERE P3.pname = 'James Dean'
+    )
+) >= (
+    SELECT COUNT(DISTINCT G4.genre)
+    FROM People P4
+    JOIN PlaysIn PI4 ON P4.pname = PI4.pname
+    JOIN Genres G4 ON PI4.tid = G4.tid
+    WHERE P4.pname = 'James Dean'
+);
+
