@@ -36,7 +36,22 @@ LEFT JOIN
 WHERE
   PI.pname IS NULL;
 
-
+5.
+SELECT
+  P.pname AS name,
+  COUNT(DISTINCT PI.tid) AS count,
+  MIN(T.syear) AS earliest,
+  MAX(T.runtime) AS longest
+FROM
+  People P
+JOIN
+  PlaysIn PI ON P.pname = PI.pname
+JOIN
+  Titles T ON PI.tid = T.tid
+GROUP BY
+  P.pname
+HAVING
+  COUNT(DISTINCT PI.tid) > 0;
 
 6.
 SELECT
@@ -84,6 +99,49 @@ ORDER BY
     T.tname ASC,
     E.season DESC,
     E.epnum ASC;
+
+9. 
+SELECT
+    genre,
+    title_count AS count
+FROM (
+    SELECT
+        g.genre,
+        COUNT(t.tid) AS title_count
+    FROM
+        Genres g
+    JOIN
+        Titles t ON g.tid = t.tid
+    GROUP BY
+        g.genre
+    HAVING
+        COUNT(t.tid) >= 5
+) AS genre_counts
+WHERE
+    title_count IN (
+        SELECT DISTINCT
+            title_count
+        FROM (
+            SELECT
+                g.genre,
+                COUNT(t.tid) AS title_count
+            FROM
+                Genres g
+            JOIN
+                Titles t ON g.tid = t.tid
+            GROUP BY
+                g.genre
+            HAVING
+                COUNT(t.tid) >= 5
+        ) AS distinct_counts
+        ORDER BY
+            title_count ASC
+        LIMIT 3
+    )
+ORDER BY
+    title_count ASC, genre ASC;
+
+
 
 10. 
 

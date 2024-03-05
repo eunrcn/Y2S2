@@ -1,0 +1,36 @@
+#include <unistd.h>
+
+/* Define a pipe-based lock */
+struct pipelock {
+    int fd[2];
+};
+
+/* Initialize lock */
+void lock_init(struct pipelock *lock) {
+    if (pipe(lock->fd) == -1) {
+        // Handle error if pipe creation fails
+        perror("Error creating pipe");
+        // You might want to handle the error more gracefully in a real-world scenario
+    }
+}
+
+/* Function used to acquire lock */
+void lock_acquire(struct pipelock *lock) {
+    // Write to the pipe to acquire the lock
+    if (write(lock->fd[1], "1", 1) != 1) {
+        // Handle error if write fails
+        perror("Error writing to pipe");
+        // You might want to handle the error more gracefully in a real-world scenario
+    }
+}
+
+/* Release lock */
+void lock_release(struct pipelock *lock) {
+    char buffer[1];
+    // Read from the pipe to release the lock
+    if (read(lock->fd[0], buffer, 1) != 1) {
+        // Handle error if read fails
+        perror("Error reading from pipe");
+        // You might want to handle the error more gracefully in a real-world scenario
+    }
+}
