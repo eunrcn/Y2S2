@@ -1,6 +1,8 @@
 getwd()
 [1] "/Users/eunice"
 
+edit
+
 setwd("/Users/eunice/Desktop/ST1131")
 
 
