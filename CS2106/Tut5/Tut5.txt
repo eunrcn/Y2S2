@@ -1,3 +1,51 @@
+q1
+instructions happen in sequential order 
+take out the load and store
+4 instructions from task A 
+LOAD STORE LOAD STORE
+insert instructions from task B
+
+use the tree method and evaluate the different states
+
+
+q2
+can disabling interrupts avoid race conditions?
+
+if yes, would disabling interrupts be a good way of avoiding race conditions? explain
+
+Loss of Responsiveness:
+
+Disabling interrupts prevents the system from responding promptly to external events or handling time-sensitive tasks.
+Critical operations, such as responding to user input or managing I/O devices, may be delayed or blocked.
+Potential for Deadlocks:
+
+If a process holding a lock is interrupted (interrupts disabled) and then waits for a resource that is held by another process that is also waiting for the first process to release the lock, a deadlock may occur.
+
+Mutexes and Locks:
+The use of synchronization primitives such as mutexes, locks, and semaphores provides a more targeted and controlled way of managing access to shared resources.
+
+
+3.
+
+int atomic_increment(int* t) {
+    int current_value, new_value;
+
+    do {
+        // Read the current value
+        current_value = *t;
+
+        // Calculate the new value by incrementing the current value
+        new_value = current_value + 1;
+
+        // Attempt to atomically compare and swap
+    } while (!_sync_bool_compare_and_swap(t, current_value, new_value));
+
+    // Return the incremented value
+    return new_value;
+}
+
+
+4.
 #include <unistd.h>
 
 /* Define a pipe-based lock */
@@ -24,6 +72,12 @@ void lock_acquire(struct pipelock *lock) {
     }
 }
 
+pipe read 
+if the pipe have data in it, if the pipe is not empty, lock is unlocked
+if pipe is empty, read operation is locked, blocked
+
+
+
 /* Release lock */
 void lock_release(struct pipelock *lock) {
     char buffer[1];
@@ -34,3 +88,6 @@ void lock_release(struct pipelock *lock) {
         // You might want to handle the error more gracefully in a real-world scenario
     }
 }
+
+
+pipe write
