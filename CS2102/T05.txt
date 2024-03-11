@@ -1,0 +1,52 @@
+1. π pizza(σ cname=’Alice’∧pizza∈/π pizza(σ cname=’Bob’(Likes))(Likes))
+
+q1: pizza tha alice Likes
+q2: pizza that bob Likes
+
+remove bob pizza from alice pizza
+
+
+q1: π[pizza] (σ[cname = 'Alice' (Likes)])
+q2: π[pizza] (σ[cname = 'Bob' (Likes)])
+
+q1 - q2 
+
+b. Find all customer-restaurant pairs (C,R) 
+where C and R both located in the same area and C
+likes some pizza that is sold by R where the price 
+of the pizza is less than $15
+
+q1 : C and R are in the same area
+q2 : C likes pizza sold by R and Price < 15
+
+natural join, cross product with condtion that area has to be the same
+
+q1 : PROJECT[cname, rname]Customers NATURAL JOIN restaurant
+
+dont forget projection, to keep the attributes i need 
+remove the redundant ones
+
+join Likes and Sells for C and R and price less than 15
+
+q2 : PROJECT[cname, rname] (Likes NATURAL JOIN SELECT[price<15](Sells))
+
+Qans : q1 INTERSECT q2
+
+c. 
+q1: all C,P Pairings
+q2: Likes 
+
+Q1 - Q2 
+
+q1: PROJECT (cname, pizza) [Customers x Pizza]
+q2: Likes 
+
+2a. 
+find all restaurant that sell all pizza that alice likes and dont sell any that bob likes
+
+
+q3i:equivalent
+q3ii:
+q3iii: equivalent
+q3iv: not equivalent but isomorphic 
+
