@@ -209,3 +209,15 @@ WHERE  P0.tid = T0.tid
 - testing universal quantification (either double negation or cardinality solution are accepted)
 - if James Dean does not play in any, then the output is everyone
 */
+
+
+CREATE OR REPLACE VIEW q2 (area) AS 
+SELECT a.name
+FROM areas a
+WHERE a.region = 'central'
+AND NOT EXISTS (
+  SELECT 1
+  FROM mrt_stations m, subzones s1
+  WHERE m.subzone = s1.name
+  AND s1.area = a.name
+)
