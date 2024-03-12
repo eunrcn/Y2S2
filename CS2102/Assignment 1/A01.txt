@@ -171,3 +171,6 @@ AND (
     WHERE P4.pname = 'James Dean'
 );
 
+
+q6 
+key to that door is located in the trasure chest in the same location

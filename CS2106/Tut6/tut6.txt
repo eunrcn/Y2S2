@@ -1,0 +1,158 @@
+fixed
+dynamic partitioning
+book keep the free holes 
+use linked list
+at the start of system, we just need one node at address 0
+T is occupied
+F is free
+size 3 is ram
+when program ask for space, allocate it to the first free block that can 
+fit the process
+
+buddy system
+
+q1
+first fit
+first come first serve
+process 1 357 kb 
+go through linked list and find first node that can fit this programme
+allocate exactly the amount it request for
+remaining space will become a "hole"
+if space is 400kb and process only need 357kb, there will be 43kb
+of free space
+
+process 2 comes ask for 210kb
+go down linked list and find the first avail space
+remaining space forms a hole
+this leds to alot of holes
+and when a big process comes, none of the partition of size can fit
+process is rejected
+
+
+internal fragmentation
+within each partitioning only can have 1 process
+fixed partitioning
+2gb, split into 200mb worth of space each
+if process only need 40kb
+and the access space that is "wasted" is called internal fragmentation
+bc each process can only fit in each 200mb worth of space 
+they cannot share
+
+
+external fragmentation 
+allocating the exact space that the process request for
+but we could potentially fit a new process if we allocated all the freespace 
+and put then together//merge
+
+
+best fit algorithm
+go through every single free hole to find best fit
+fit that creates the smallest "remaining hole"
+results in the least and smallest "leftover holes" 
+
+worst fit
+look through all and find the free space that generates the 
+largest remaining hole
+quite bad bc the big processes canot fit
+but it is good to minimize small gaps of memory
+it produces quite large holes that other process can use
+
+
+Which algorithm makes the most efficient use of memory in this 
+particular case? 
+Best fit algo in this case
+
+Which algorithm has the best average runtime? 
+best and worst fit must go through entire list (o(N))
+first fit just go through first few and stops
+first fit is faster
+
+Which algorithm is the best to use overall?
+best fit bc it can fit all the processes (mem efficient)
+runtime then first fit is the best
+
+
+q2
+mem size is 16kb and smallest allocatable unit is 1kb
+will require 16/1kb = 16 bits to represent full memory
+
+
+for bitmap we can allocate smallest allocatable unit 
+to prevent internal fragmentation but it takes too much space
+as long as we have fixed smallest allocatable units,
+will have internal fragmentation.
+
+bitwise operation is faster than traversing linked list 
+node, quite fast
+how to allocate memory ?
+initially, start <- 0
+(first allocatable unit)
+start <- location of the first 0 in the bitmap after start
+(go to the first avail 0)
+bitwise OR (6,7,8) to 1
+(now its "filled with ones")
+
+process control block will always have starting address
+find address that it starts, space that it uses
+use bitwise AND to deallocate
+
+book keeping: quickly denote it is free space
+
+merging adjecent free space
+there is no need to merge 
+benefit of using bitmap as adjacent free spaces are 
+merged automatically
+
+it is contiguous/continuous
+
+bit maps are simple, fast, easy to manipulate
+
+q3
+at the start of the buddy system
+tracked via an array
+each entry/index in array has a linked list
+at the start, we only have 1 node at the highest index
+allocating space: process A comes and wants 240
+we will find lowest power of 2 to fit this a
+smallest block to fit is 256
+start from system being fully free
+1024 at address 0
+split into 2 piece to be able to fit in the next
+split 1:
+1024=
+512 =  0 // 512
+
+
+split 2:
+1024=
+512 = 512
+256 = 0 // 256
+
+how to find free blocks
+tracing
+at the start bc we have 32 bits free
+array of 6 entries 
+32 = 00000 (assume initial all free at addr 0)
+16 = 00000 (addr 0) and 10000 (addr 16) (buddies) ( split the first block again)
+8  = 00000 (addr 0) and 01000 (addr 8)  
+4  = 00000 (addr 0) and 00100 (addr 4) (0 can stop splitting alr bc for now there is no 00010)
+2  = 00100 (addr 4) and 00110 (can stop alr) /// split 01000 from 8 
+1  = cannot end as buddies so need to split again 
+
+
+
+buddies: first index is diff and the rest is the same 
+
+largest possible size of each of the free blocks
+10000
+
+minimum sum of all allocated mem
+00100 01101 11000
+
+
+
+
+
+
+
+
