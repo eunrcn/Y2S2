@@ -1,0 +1,198 @@
+logical address -> physical address
+logical address
+P=most significant m-n bits of LA
+D=remaining n bits of LA 
+
+p=00
+d=11
+use p to find frame number f =2
+PA = 
+
+paging 
+two types of mem usage
+text (instructions)
+data (global variables)
+6 instructions 
+5 data words
+
+frame size = 4 words
+each page/frame can have 4 words 
+up to 16 words
+16 frames
+16 frames x 4 words each 
+
+assume P's data region is placed right after the instruction region 
+
+Page#  Frame#  Valid 
+0        5       T
+1        2       T
+2        10      T
+3        9       T
+
+
+fetch first instruction
+logical address 
+page number offset
+00 00 
+
+physical address 
+PA = F*2^n + D 
+5 *2^2 + 0 = 20
+D is 0 bc offset is 0
+
+
+
+take base address and add offset
+
+segmentation with paging
+<SN, number, offset>
+<0,0,0>
+
+7*2^2 = 28
+bc frame =7
+
+load the 2nd data word
+
+tlb 
+cpu 
+
+2. paging with tlb
+Assuming the system uses a TLB  and 75% of all page-table references hit 
+in the TLB. What is the average memory access time? You can assume that 
+looking up a page table entry in TLB takes negligible time.
+
+75% from tlb and 25% from DRAM
+0.75* actual access time + (1-0.75) *(access time from dram)
+0.75 * 50ns + 0.25 *100ns +62.5 ns
+
+
+How many entries does a TLB need to have to achieve a hit ratio of 75%?
+Assume the program generates logical memory addresses uniformly at random.
+Do you think a TLB in an actual machine is this large? If not, then how 
+is it possible to achieve a high TLB-hit rate? 
+
+total page table entries = total logical memory address / page size
+= 2^32/2^12
+= 2^20
+= 1 million entries
+
+since memory is uniformly distributed, then we need at least 1M * 0.75
+= 700k++ entries in tlb
+
+assume program generates logical memory addresses uniformly distributed
+at random. Do you tlb in an actual machine is large
+temporal locality
+loops will use the same instructions again and again
+
+spacial locality 
+the ones around the jsut used one have high chance of being used again
+
+q3
+draw a sample process with the following running information:  
+• SBR0 stores the stack region {SAddr = 64, Limit = 24}  64 to 88
+• SBR1 stores the data region {SAddr = 8, Limit = 16}  8 to 24
+• SBR2 stores the heap region {SAddr = 32, Limit = 12}  32 to 44
+• SBR3 stores the text region {SAddr = 44, Limit = 16}  44 to 60
+
+Briefly describe how to handle malloc() (dynamic memory allocation)
+for the sample process in (a).  
+heap alr bordering on textmust find larger free piece of memory 
+for relocating heap region 
+
+Do we need caching mechanism like TLB in this machine? Briefly explain
+no need bc we alr store in SBR hard ware registers which give fast acess 
+to physical address lookup
+
+q4
+tut 1
+
+modification to child will not be visible at parent
+copy in the physical space and remap for child
+new text will have same content as the previous frame
+immediate duplication 
+
+why dont wanna duplicate during fork
+text segment is read only, dont need change
+therefore no need duplicate this frame
+let text in child map to orginal frame in parent
+
+
+after fork, we exec
+and tear down current mempry space and allocate new one
+memory frame duplicated previously will be meaningless
+instead of duplicating all when fork
+we only want to duplicate the ones that the child will 
+write to
+map new page to original frame 
+so parent and child share same set of frames
+only way the child can write to the page, allocate new frame 
+copy og frame to new frame
+then change the new frame
+
+kernel must have a way to catch the write operation
+parent page table 
+PAGE # FRAME # RWX
+0 
+1      2       100
+2
+
+child page table 
+PAGE # FRAME # RWX
+0 
+1      2       100
+2
+
+clear writable bit and turn into 0
+when execute store instruction
+since not writable
+page fault exception #PF
+pfe handler by kernel
+page for exception handler will allocate new frame
+copy over frame
+update and set as writable 
+
+child page table 
+PAGE # FRAME # RWX
+0 
+1      6       110
+2
+
+clear parent to 1 and return
+parent page table 
+PAGE # FRAME # RWX
+0 
+1      2       110
+2
+
+reference count
+how many process referencing this frame
+originally only parent process
+check reference count is 1
+means child process alr duplicated it 
+it is safe to set the writable to 1 and return 
+
+kernel info
+is it cow 
+ref count
+
+tut 2
+parent
+PAGE # FRAME # RWX
+0      7       101
+1      2       110
+2      5       100
+
+child
+PAGE # FRAME # RWX
+0      7       101
+1      2       100
+2      5       100
+
+initially when fork, wont have write process to it
+page 0 and 2 no need to be duplicated
+but page 1 needs to be duplicated 
+
+1      6       110
+
+
+only copy what is required so that no need waste space
