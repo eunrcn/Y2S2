@@ -1,0 +1,48 @@
+q1: stoning
+
+q2:
+fewer than 3, return null
+4 variables
+count
+sum -> average score
+min 
+max
+
+formula
+avg := (sum, max, min) / (count - 2)
+
+SELECT MAX(score), MIN(score), COUNT(score), SUM(score)
+  INTO max_scr, min_scr, count_scr, 
+
+IF count_scr < 3:
+    r_avg := NULL;
+ELSE 
+    r_avg := (sum_scr something here but im slow)
+
+
+CURSOR is like a for loop to compare
+go one by one and work on values on that row
+basic implementation is that it is a pointer 
+
+case 1
+move from 62 to 62
+moving between same sid
+update local variables and keep moving on 
+
+case 2
+move from 62 to 65
+show that previous has ended
+compute average
+return next 
+reinitialize the 4 variables
+
+case 3
+there is no more row
+
+cursor declaration
+ordered by sid 
+
+record declaration is important to fetch pointer to record
+exit when not found no need to do reinitialization
+
+

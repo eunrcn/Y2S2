@@ -11,10 +11,8 @@
 
 #define NUM_PROCESSES 8
 
-// Function prototypes
-long int calculate_partial_sum(int start, int end, int *vect);
-
 int main() {
+
   int vect[VECT_SIZE];
   int pid;
   int shmid1;
@@ -37,8 +35,7 @@ int main() {
   for (i = 0; i < VECT_SIZE; i++)
     vect[i] = rand();
 
-  shmid1 =
-      shmget(IPC_PRIVATE, NUM_PROCESSES * sizeof(long int), IPC_CREAT | 0600);
+  shmid1 = shmget(IPC_PRIVATE, NUM_PROCESSES * sizeof(int), IPC_CREAT | 0600);
   all_sum = (long int *)shmat(shmid1, NULL, 0);
 
   for (i = 0; i < NUM_PROCESSES; i++) {
@@ -52,49 +49,27 @@ int main() {
   long int sum = 0;
 
   if (pid == 0) {
-    // Child process
-    int start_index = i * per_process;
-    int end_index = start_index + per_process;
 
-    long int partial_sum = calculate_partial_sum(start_index, end_index, vect);
+    /*insert code */
 
-    all_sum[i] = partial_sum;
-
-    exit(0); // Child process exits
   } else {
-    // Parent process
     start = clock();
 
-    // Wait for all child processes to finish
-    for (j = 0; j < NUM_PROCESSES; j++)
-      wait(NULL);
-
-    // Aggregate partial sums from all child processes
-    for (j = 0; j < NUM_PROCESSES; j++)
-      sum += all_sum[j];
+    /* insert code */
 
     end = clock();
 
-    time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
+    time_taken = ((double)end - start) / CLOCKS_PER_SEC;
 
     printf("\nNumber of items: %d\n", VECT_SIZE);
     printf("Sum element is %ld\n", sum);
     printf("Time taken is %3.10f\n\n", time_taken);
 
-    // Clean up shared memory
+    // Clean up process table
+    for (j = 0; j < NUM_PROCESSES; j++)
+      wait(NULL);
+
     shmdt(all_sum);
     shmctl(shmid1, IPC_RMID, 0);
   }
-
-  return 0;
-}
-
-long int calculate_partial_sum(int start, int end, int *vect) {
-  long int partial_sum = 0;
-  int i;
-
-  for (i = start; i < end; i++)
-    partial_sum += vect[i];
-
-  return partial_sum;
 }
