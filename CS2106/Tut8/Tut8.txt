@@ -1,0 +1,158 @@
+access page 5
+miss check page table
+miss since not in mem resident
+it is not in ramp, it is in swap
+execute oage fault handler
+swap with smallest page number -> frame 4 available
+swap it out to any region free in swap
+
+additional step: check whether in tlb, if not then check whether in 
+page table in ram
+if not then fetch the actual page and swap it in to the ram 
+
+
+accessing the swap in secdonary storage
+hard disk access time = 5ms
+
+
+best case
+over head in tlb hit = 1ns
+total= mem + tlb hit = 30+1=31
+
+worst case
+senario
+tlb access
+check page table-whether its in ram
+swap out 
+if its not in ram write out a victim page to free out space in ram 
+write first 
+swap in 
+then read 
+1+30+5+5+30
+
+minimal overhead
+
+ignores the overhead of reaccess tlb and page table
+
+what happens if we have 2 level paging
+instead of just splitting to page number and offset
+we have page directory
+page directory is stored in ram (physical memory)
+page table needs 
+page faults are very costly bc they are in secondary storage
+
+q2 
+maximum 2 to power of 48 bytes
+max space for a process
+virtual address space is 48 bits 
+
+memory space of process is max 2 to power of 48 
+split into 4 kib per page
+s to power of 48 bytes 
+each page is 2 to power of 12 
+2 to power of 48 / 2 power 12 = 2 power 36
+
+what is size of the leaf level page table
+each physical address points to somewhere in ram 
+each page is 4 kb 
+pte size = 8 bytes 
+entire page table = 2 power 36 x 8 bytes (2 power 3)
+= 2 power 39 
+
+every process needs to have same page table 
+single level page is not enough
+needs multi level paging 
+have virtual address split into page number and offset
+convert page number into frame number 
+split virtual address into two parts
+can we chop up and store separetly
+chop up in pages 
+fit each chop part into one page 
+
+PAGE TABLE ENTRIES 
+number of pte per page 
+2 power 12 / 8 bytes 
+= 2 power 9
+= 512 entries 
+
+page directory entry 
+points to base address of smaller blocks of page tables
+
+last table page table 
+= 2 power 36 PTEs 
+
+cut into (2 power 36/2 power 9) pages 
+= 2 power 27 PDEs
+
+take number of page table entries total
+each page can fit table of 9 
+each page need to be checked by a page directory entry 
+
+if each entry is the same size 8 bytes 
+total size = 2 power 27 PDEs x 8 bytes each 
+= 2 power 30 bytes = 1 gib
+
+most process wont use full space
+denote how much space we using
+
+
+how do we know how many times we can chop up virtual address
+previously is page number and offset
+offset is page size 
+tells you exactly which byte you looking actual
+previously is page number 
+which results in huge page table
+now we chop up huge page table into smaller page table
+specify which entry in the page table we are looking at 
+
+if each choped component is 512 entries 
+we need bits to specify which page entry we looking at
+9 bits to reserve bc 2 power 9 
+last 12 bits reserve for offset
+next 9 bits is reserved for which entry in smaller page table we looking at
+reserve first few bist for page directory entry 
+
+can we chop it more?
+to save more space 
+went from 512 to 1 gb 
+since every page direcotry is same size
+we can chop up to offset 9 9 9 9 
+4 levels of page table
+
+previously was leaf level and 1 directory
+now we chop up directory into 512 chunks
+
+how much space we need for 1 gib of data
+first level is frame
+1 gb of data
+2 power 30 is 1 gb 
+each frame is 4 kb 
+2 power 30 / 4 kib = 2 power 18 pages 
+
+2 power 18/ 2 power 9= 2 power 9 PD tablets 
+level 4 tablets 
+
+2power 9 / 2 power 9
+1 tablet 
+
+next level we only need 1 PD entry the rest is invalid
+valid bit is set to 0
+
+the last one also one entry
+
+we are starting with address all 0 
+fill up all the way until 1 gb in binary 
+
+add 1
+push everything down then access needs to be filled by additional page
+overflow
+
+every level there is a push down
+
+at frame level we push by 1 page 
+
+next level need 1 more tablet
+next level need 1 more tablet
+next level need 1 more entry 
+last one no change 
+
